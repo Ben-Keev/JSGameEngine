@@ -29,9 +29,10 @@ class Input extends Component {
       console.log('Gamepad disconnected:', event.gamepad);
       this.gamepadIndex = null;
     });
+
   }
 
-  // This method checks if a particular key is down.
+  // Takes a String
   isKeyDown(key) {
     // If the key is in the keys object and its value is true, return true. Otherwise, return false.
     return this.keys[key] || false;
@@ -51,6 +52,7 @@ class Input extends Component {
   }
 
   // This method checks if a particular button on the gamepad is down.
+  // Must take a string too..
   isGamepadButtonDown(buttonIndex) {
     // Get the current state of the gamepad.
     const gamepad = this.getGamepad();
@@ -60,6 +62,7 @@ class Input extends Component {
     }
     return false;
   }
+
 }
 
 // The Input class is then exported as the default export of this module.

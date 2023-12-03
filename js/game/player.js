@@ -8,6 +8,8 @@ import Enemy from './enemy.js';
 import Platform from './platform.js';
 import Collectible from './collectible.js';
 import ParticleSystem from '../engine/particleSystem.js';
+import ActionHandler from '../engine/actionHandler.js';
+import Action from '../engine/action.js';
 
 // Defining a class Player that extends GameObject
 class Player extends GameObject {
@@ -17,7 +19,10 @@ class Player extends GameObject {
     this.renderer = new Renderer('blue', 50, 50, Images.player); // Add renderer
     this.addComponent(this.renderer);
     this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
-    this.addComponent(new Input()); // Add input for handling user input
+
+    this.addComponent(new ActionHandler()); // Add input for handling user input
+    this.getComponent(ActionHandler).addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action
+
     // Initialize all the player specific properties
     this.direction = 1;
     this.lives = 3;
@@ -35,23 +40,20 @@ class Player extends GameObject {
   // The update function runs every frame and contains game logic
   update(deltaTime) {
     const physics = this.getComponent(Physics); // Get physics component
-    const input = this.getComponent(Input); // Get input component
+    const input = this.getComponent(ActionHandler); // Get input component
 
-    this.handleGamepadInput(input);
+    const movementAxes = input.getMovementAxes(); // Get movement axes from input component
     
     // Handle player movement
-    if (!this.isGamepadMovement && input.isKeyDown('ArrowRight')) {
-      physics.velocity.x = 100;
-      this.direction = -1;
-    } else if (!this.isGamepadMovement && input.isKeyDown('ArrowLeft')) {
-      physics.velocity.x = -100;
-      this.direction = 1;
-    } else if (!this.isGamepadMovement) {
+    if (movementAxes.x > 0.1 || movementAxes.x < -0.1) {
+      physics.velocity.x = 100 * Math.sign(movementAxes.x);
+      this.direction = -Math.sign(movementAxes.x);
+    } else {
       physics.velocity.x = 0;
     }
 
     // Handle player jumping
-    if (!this.isGamepadJump && input.isKeyDown('ArrowUp') && this.isOnPlatform) {
+    if (input.isActionDown('Jump') && this.isOnPlatform) {
       this.startJump();
     }
 
@@ -107,41 +109,6 @@ class Player extends GameObject {
     }
 
     super.update(deltaTime);
-  }
-
-  handleGamepadInput(input){
-    const gamepad = input.getGamepad(); // Get the gamepad input
-    const physics = this.getComponent(Physics); // Get physics component
-    if (gamepad) {
-      // Reset the gamepad flags
-      this.isGamepadMovement = false;
-      this.isGamepadJump = false;
-
-      // Handle movement
-      const horizontalAxis = gamepad.axes[0];
-      // Move right
-      if (horizontalAxis > 0.1) {
-        this.isGamepadMovement = true;
-        physics.velocity.x = 100;
-        this.direction = -1;
-      } 
-      // Move left
-      else if (horizontalAxis < -0.1) {
-        this.isGamepadMovement = true;
-        physics.velocity.x = -100;
-        this.direction = 1;
-      } 
-      // Stop
-      else {
-        physics.velocity.x = 0;
-      }
-      
-      // Handle jump, using gamepad button 0 (typically the 'A' button on most gamepads)
-      if (input.isGamepadButtonDown(0) && this.isOnPlatform) {
-        this.isGamepadJump = true;
-        this.startJump();
-      }
-    }
   }
 
   startJump() {
