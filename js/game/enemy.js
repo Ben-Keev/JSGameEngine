@@ -1,3 +1,5 @@
+import Entity from './entity.js';
+
 // Import the GameObject class from the 'engine' directory
 import GameObject from '../engine/gameobject.js';
 
@@ -15,21 +17,13 @@ import Player from './player.js';
 import Platform from './platform.js';
 
 // Define a new class, Enemy, which extends (i.e., inherits from) GameObject
-class Enemy extends GameObject {
+class Enemy extends Entity {
 
   // Define the constructor for this class, which takes two arguments for the x and y coordinates
-  constructor(x, y) {
+  constructor(x, y, renderer = new Renderer('green', 50, 50, Images.enemy), physics = new Physics({ x: 50, y: 0 }, { x: 0, y: 0 })) {
     // Call the constructor of the superclass (GameObject) with the x and y coordinates
-    super(x, y);
-    
-    // Add a Renderer component to this enemy, responsible for rendering it in the game.
-    // The renderer uses the color 'green', dimensions 50x50, and an enemy image from the Images object
-    this.addComponent(new Renderer('green', 50, 50, Images.enemy));
-    
-    // Add a Physics component to this enemy, responsible for managing its physical interactions
-    // Sets the initial velocity and acceleration
-    this.addComponent(new Physics({ x: 50, y: 0 }, { x: 0, y: 0 }));
-    
+    super(x, y, renderer, physics);
+        
     // Initialize variables related to enemy's movement
     this.movementDistance = 0;
     this.movementLimit = 100;

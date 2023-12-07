@@ -1,7 +1,8 @@
 // Importing necessary components and resources
-import Entity from './entity.js';
+import GameObject from '../engine/gameobject.js';
 import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
+import Input from '../engine/input.js';
 import { Images } from '../engine/resources.js';
 import Enemy from './enemy.js';
 import Platform from './platform.js';
@@ -11,14 +12,13 @@ import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
 
 // Defining a class Player that extends GameObject
-class Player extends Entity {
+class PlayerOld extends GameObject {
   // Constructor initializes the game object and add necessary components
-  constructor(x, y, renderer = new Renderer('blue', 50, 50, Images.player), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
-    
-    super(x, y, renderer, physics); // Call parent's constructor
-
-    this.physics = this.getComponent(Physics);
-    this.renderer = this.getComponent(Renderer);
+  constructor(x, y) {
+    super(x, y); // Call parent's constructor
+    this.renderer = new Renderer('blue', 50, 50, Images.player); // Add renderer
+    this.addComponent(this.renderer);
+    this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })); // Add physics
 
     this.addComponent(new ActionHandler()); // Add input for handling user input
     this.getComponent(ActionHandler).addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action

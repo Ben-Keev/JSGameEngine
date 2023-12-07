@@ -1,5 +1,5 @@
-// Import the GameObject class from the 'engine' directory
-import GameObject from '../engine/gameobject.js';
+
+import Entity from './entity.js';
 
 // Import the Renderer class from the 'engine' directory
 import Renderer from '../engine/renderer.js';
@@ -8,7 +8,7 @@ import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
 
 // Define a new class, Collectible, which extends (i.e., inherits from) GameObject
-class Collectible extends GameObject {
+class Collectible extends Entity {
   
   // Define the constructor for this class. The constructor takes five arguments:
   // - x and y coordinates
@@ -17,16 +17,7 @@ class Collectible extends GameObject {
   constructor(x, y, width, height, color = 'gold') {
     
     // Call the constructor of the superclass (GameObject) with the x and y coordinates
-    super(x, y);
-
-    // Add a new Renderer component to this collectible. The renderer is responsible for drawing the collectible.
-    // It uses the provided color, width, and height.
-    this.addComponent(new Renderer(color, width, height));
-
-    // Add a new Physics component to this collectible. The physics component is responsible for handling the physics
-    // (like movement, collision detection, etc.). In this case, the collectible doesn't move,
-    // so the initial velocity, acceleration, and friction are all set to zero.
-    this.addComponent(new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
+    super(x, y, new Renderer(color, width, height), new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
 
     // Set the 'tag' property of this collectible. The tag is used to identify the type of GameObject
     // (useful when checking collisions, for example)

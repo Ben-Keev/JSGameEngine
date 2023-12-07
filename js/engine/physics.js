@@ -26,10 +26,42 @@ class Physics extends Component {
   isColliding(otherPhysics) {
     // Get the bounding boxes of both game objects.
     const [left, right, top, bottom] = this.getBoundingBox();
+    
+    if(otherPhysics !== undefined) {
     const [otherLeft, otherRight, otherTop, otherBottom] = otherPhysics.getBoundingBox();
 
     // Check if the bounding boxes overlap. If they do, return true. If not, return false.
     return left < otherRight && right > otherLeft && top < otherBottom && bottom > otherTop;
+    }
+
+    return false;
+  }
+
+  // Copilot generated
+  // The getCollidingObject method checks if this game object is colliding with any other game object and returns the colliding object.
+  getCollidingObject() {
+    // Get all the game objects in the scene.
+    const gameObjects = this.gameObject.game.gameObjects;
+
+    // Iterate through each game object.
+    for (const gameObject of gameObjects) {
+      // Skip if the game object is the same as this game object.
+      if (gameObject === this.gameObject) {
+        continue;
+      }
+
+      // Get the Physics component of the other game object.
+      const otherPhysics = gameObject.getComponent(Physics);
+
+      // Check if this game object is colliding with the other game object.
+      if (this.isColliding(otherPhysics)) {
+        // Return the colliding object.
+        return gameObject;
+      }
+    }
+
+    // If no collision is found, return null.
+    return null;
   }
 
   // The getBoundingBox method returns the bounding box of the game object in terms of its left, right, top, and bottom edges.
