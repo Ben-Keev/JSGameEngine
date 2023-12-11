@@ -39,9 +39,10 @@ class Physics extends Component {
 
   // Copilot generated
   // The getCollidingObject method checks if this game object is colliding with any other game object and returns the colliding object.
-  getCollidingObject() {
+  getCollidingObjects() {
     // Get all the game objects in the scene.
     const gameObjects = this.gameObject.game.gameObjects;
+    const collidingObjects = [];
 
     // Iterate through each game object.
     for (const gameObject of gameObjects) {
@@ -54,14 +55,15 @@ class Physics extends Component {
       const otherPhysics = gameObject.getComponent(Physics);
 
       // Check if this game object is colliding with the other game object.
+      // Must be an entity to collide
       if (this.isColliding(otherPhysics)) {
-        // Return the colliding object.
-        return gameObject;
+        // Add the colliding object to the array.
+        collidingObjects.push(gameObject);
       }
     }
 
-    // If no collision is found, return null.
-    return null;
+    // Return the array of colliding game objects.
+    return collidingObjects;
   }
 
   // The getBoundingBox method returns the bounding box of the game object in terms of its left, right, top, and bottom edges.

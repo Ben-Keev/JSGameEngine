@@ -80,17 +80,6 @@ class Player extends Entity {
   
     // Handle collisions with platforms
     this.isOnPlatform = false;  // Reset this before checking collisions with platforms
-    const platforms = this.game.gameObjects.filter((obj) => obj instanceof Platform);
-    for (const platform of platforms) {
-      if (physics.isColliding(platform.getComponent(Physics))) {
-        if (!this.isJumping) {
-          physics.velocity.y = 0;
-          physics.acceleration.y = 0;
-          this.y = platform.y - this.renderer.height;
-          this.isOnPlatform = true;
-        }
-      }
-    }
   
     // Check if player has fallen off the bottom of the screen
     if (this.y > this.game.canvas.height) {
@@ -104,11 +93,14 @@ class Player extends Entity {
 
     // Check if player has collected all collectibles
     if (this.score >= 3) {
-      console.log('You win!');
       location.reload();
     }
 
     super.update(deltaTime);
+  }
+
+  onCollisionEnter(objects) {
+
   }
 
   startJump() {
@@ -144,7 +136,6 @@ class Player extends Entity {
   collect(collectible) {
     // Handle collectible pickup
     this.score += collectible.value;
-    console.log(`Score: ${this.score}`);
     this.emitCollectParticles(collectible);
   }
 

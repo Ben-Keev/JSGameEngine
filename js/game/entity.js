@@ -10,11 +10,12 @@ class Entity extends GameObject {
     }
 
     update(deltaTime) {
-        this.onCollisionEnter(this.getComponent(Physics).getCollidingObject());
+        this.onCollisionEnter(this.getComponent(Physics).getCollidingObjects());
         super.update(deltaTime);
     }
 
-    onCollisionEnter(objectType) {
+    // Will take array produced by getCollidingObjects
+    onCollisionEnter(objects) {
         
     }
 }

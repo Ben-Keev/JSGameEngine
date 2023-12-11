@@ -16,7 +16,29 @@ class Platform extends Entity {
     // Set the tag property to 'platform'. This can be used to identify platforms later in the game logic
     this.tag = 'platform'; 
   }
-}
 
+  // Copilot adjusted to make work with multiple objects
+  freezePhysicsVelocityY(object) {
+    if (object instanceof Entity) { // Prevent null reference errors
+      object.getComponent(Physics).velocity.y = 0;
+      object.getComponent(Physics).acceleration.y = 0;
+      object.y = this.y - object.getComponent(Renderer).height;
+      object.isOnPlatform = true;
+    }
+  }
+
+  // Copilot adjusted to make it work with multiple objects
+  onCollisionEnter(objects) {
+    objects.forEach((objectType) => {
+      try { // Works on entities that can jump
+        if (!objectType.isJumping) {
+          this.freezePhysicsVelocityY(objectType);
+        }
+      } catch { // For all other types of entities
+        this.freezePhysicsVelocityY(objectType);
+      }
+    });
+  }
+}
 // Export the Platform class as the default export of this module
 export default Platform;

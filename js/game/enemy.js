@@ -67,19 +67,6 @@ class Enemy extends Entity {
       player.collidedWithEnemy();
     }
 
-    // Check if the enemy is colliding with any platforms
-    const platforms = this.game.gameObjects.filter(obj => obj instanceof Platform);
-    this.isOnPlatform = false;
-    for (const platform of platforms) {
-      if (physics.isColliding(platform.getComponent(Physics))) {
-        // If it is, stop its vertical movement and position it on top of the platform
-        physics.velocity.y = 0;
-        physics.acceleration.y = 0;
-        this.y = platform.y - this.getComponent(Renderer).height;
-        this.isOnPlatform = true;
-      }
-    }
-
     // Call the update method of the superclass (GameObject), passing along deltaTime
     super.update(deltaTime);
   }

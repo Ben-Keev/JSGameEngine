@@ -1,4 +1,4 @@
-
+// Import entity
 import Entity from './entity.js';
 
 // Import the Renderer class from the 'engine' directory
