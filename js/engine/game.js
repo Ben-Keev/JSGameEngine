@@ -1,6 +1,7 @@
 // This class depends on the Camera, which is a separate module and needs to be imported.
 import Camera from './camera.js';
 
+
 // The Game class is responsible for setting up and managing the main game loop.
 class Game {
   // The constructor initializes a new instance of the Game class.
@@ -23,6 +24,15 @@ class Game {
     window.addEventListener('resize', () => this.resizeCanvas());
     // Instantiate a new camera without a target and with dimensions equal to the canvas size.
     this.camera = new Camera(null, this.canvas.width, this.canvas.height);
+
+    // Allows user to pause game via keyboard
+    document.addEventListener('keyup', (event) => {
+      if (event.code === 'Space') {
+        this.togglePause();
+      }
+    });
+
+    this.isPaused = false;
   }
 
   // This method resizes the canvas to fill the window, with a small margin.
@@ -36,11 +46,16 @@ class Game {
     this.isRunning = true;
     requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
   }
-
+  
   // The main game loop, which is called once per frame.
   gameLoop(currentFrameTime) {
     // Calculate the time passed since the last frame.
-    this.deltaTime = (currentFrameTime - this.lastFrameTime) / 1000;
+    if (!this.isPaused) {
+      this.deltaTime = (currentFrameTime - this.lastFrameTime) / 1000;
+    } else {
+      this.deltaTime = 0;
+    }
+
     // Update the last frame time.
     this.lastFrameTime = currentFrameTime;
 
@@ -114,6 +129,10 @@ class Game {
     // Restart the game.
     this.start();
   }
+
+  togglePause() {
+    this.isPaused = !this.isPaused;
+  }  
 }
 
 // The Game class is then exported as the default export of this module.

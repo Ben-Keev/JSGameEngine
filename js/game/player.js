@@ -3,10 +3,6 @@ import Entity from './entity.js';
 import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
 import { Images } from '../engine/resources.js';
-import Enemy from './enemy.js';
-import Platform from './platform.js';
-import Collectible from './collectible.js';
-import ParticleSystem from '../engine/particleSystem.js';
 import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
 
@@ -19,10 +15,11 @@ class Player extends Entity {
 
     this.physics = this.getComponent(Physics);
     this.renderer = this.getComponent(Renderer);
-
+    
     this.addComponent(new ActionHandler()); // Add input for handling user input
-    this.getComponent(ActionHandler).addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action
-
+    this.input = this.getComponent(ActionHandler);
+    this.input.addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action
+    
     // Initialize all the player specific properties
     this.direction = 1;
     this.lives = 3;
@@ -32,51 +29,24 @@ class Player extends Entity {
     this.jumpForce = 400;
     this.jumpTime = 0.3;
     this.jumpTimer = 0;
+    this.speed = 100;
     this.isInvulnerable = false;
-    this.isGamepadMovement = false;
-    this.isGamepadJump = false;
-  }
+  }x
+
+  // Does not function, as pause toggles too quickly
+  // pauseHandler() {
+  //   console.log(this.input.wasActionDown('Pause'))
+  //   // Handle pausing the game
+  //   if (this.input.wasActionDown('Pause')) {
+  //     this.game.togglePause(); // Call togglePause() from game.js
+  //   }
+  // }
 
   // The update function runs every frame and contains game logic
   update(deltaTime) {
-    const physics = this.getComponent(Physics); // Get physics component
-    const input = this.getComponent(ActionHandler); // Get input component
 
-    const movementAxes = input.getMovementAxes(); // Get movement axes from input component
-    
-    // Handle player movement
-    if (movementAxes.x > 0.1 || movementAxes.x < -0.1) {
-      physics.velocity.x = 100 * Math.sign(movementAxes.x);
-      this.direction = -Math.sign(movementAxes.x);
-    } else {
-      physics.velocity.x = 0;
-    }
-
-    // Handle player jumping
-    if (input.isActionDown('Jump') && this.isOnPlatform) {
-      this.startJump();
-    }
-
-    if (this.isJumping) {
-      this.updateJump(deltaTime);
-    }
-
-    // Handle collisions with collectibles
-    const collectibles = this.game.gameObjects.filter((obj) => obj instanceof Collectible);
-    for (const collectible of collectibles) {
-      if (physics.isColliding(collectible.getComponent(Physics))) {
-        this.collect(collectible);
-        this.game.removeGameObject(collectible);
-      }
-    }
-  
-    // Handle collisions with enemies
-    const enemies = this.game.gameObjects.filter((obj) => obj instanceof Enemy);
-    for (const enemy of enemies) {
-      if (physics.isColliding(enemy.getComponent(Physics))) {
-        this.collidedWithEnemy();
-      }
-    }
+    this.movementHandler();
+    this.jumpHandler(deltaTime);
   
     // Handle collisions with platforms
     this.isOnPlatform = false;  // Reset this before checking collisions with platforms
@@ -99,8 +69,27 @@ class Player extends Entity {
     super.update(deltaTime);
   }
 
-  onCollisionEnter(objects) {
+  movementHandler() {
+    const movementAxes = this.input.getMovementAxes(); // Get movement axes from input component
 
+    // Handle player movement
+    if (movementAxes.x > 0.1 || movementAxes.x < -0.1) {
+      this.physics.velocity.x = this.speed * Math.sign(movementAxes.x);
+      this.direction = -Math.sign(movementAxes.x);
+    } else {
+      this.physics.velocity.x = 0;
+    }    
+  }
+
+  jumpHandler(deltaTime) {
+    // Handle player jumping
+    if (this.input.isActionDown('Jump') && this.isOnPlatform) {
+      this.startJump();
+    }
+
+    if (this.isJumping) {
+      this.updateJump(deltaTime);
+    }
   }
 
   startJump() {
@@ -121,28 +110,15 @@ class Player extends Entity {
     }
   }
 
-  collidedWithEnemy() {
-    // Checks collision with an enemy and reduce player's life if not invulnerable
+  // Might be used by enemy or collectible
+  makeInvulnerable(timeout) {
     if (!this.isInvulnerable) {
-      this.lives--;
       this.isInvulnerable = true;
       // Make player vulnerable again after 2 seconds
       setTimeout(() => {
         this.isInvulnerable = false;
-      }, 2000);
+      }, timeout);
     }
-  }
-
-  collect(collectible) {
-    // Handle collectible pickup
-    this.score += collectible.value;
-    this.emitCollectParticles(collectible);
-  }
-
-  emitCollectParticles() {
-    // Create a particle system at the player's position when a collectible is collected
-    const particleSystem = new ParticleSystem(this.x, this.y, 'yellow', 20, 1, 0.5);
-    this.game.addGameObject(particleSystem);
   }
 
   resetPlayerState() {

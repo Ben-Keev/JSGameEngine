@@ -14,7 +14,6 @@ import {Images} from '../engine/resources.js';
 
 // Import the Player and Platform classes from the current directory
 import Player from './player.js';
-import Platform from './platform.js';
 
 // Define a new class, Enemy, which extends (i.e., inherits from) GameObject
 class Enemy extends Entity {
@@ -61,14 +60,27 @@ class Enemy extends Entity {
       }
     }
 
-    // Check if the enemy is colliding with the player
-    const player = this.game.gameObjects.find(obj => obj instanceof Player);
-    if (physics.isColliding(player.getComponent(Physics))) {
-      player.collidedWithEnemy();
-    }
+    // Handle collisions with platforms
+    this.isOnPlatform = false;  // Reset this before checking collisions with platforms
+
 
     // Call the update method of the superclass (GameObject), passing along deltaTime
     super.update(deltaTime);
+  }
+
+  attackPlayer(player) {
+    if (!player.isInvulnerable) {
+      player.lives -= 1; 
+      player.makeInvulnerable(2000);
+    }
+  }
+
+  onCollisionEnter(objects) {
+    objects.forEach((object) => {
+      if (object instanceof Player) {
+        this.attackPlayer(object);
+      }
+    })
   }
 }
 
