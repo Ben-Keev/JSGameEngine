@@ -34,8 +34,10 @@ class Input extends Component {
 
   // Takes a String
   isKeyDown(key) {
-    // If the key is in the keys object and its value is true, return true. Otherwise, return false.
-    return this.keys[key] || false;
+    if (this.enabled) {
+      // If the key is in the keys object and its value is true, return true. Otherwise, return false.
+      return this.keys[key] || false;
+    }
   }
 
   // This method returns the current state of the gamepad this input component is listening to, or null if there is no such gamepad.
@@ -54,13 +56,15 @@ class Input extends Component {
   // This method checks if a particular button on the gamepad is down.
   // Must take a string too..
   isGamepadButtonDown(buttonIndex) {
-    // Get the current state of the gamepad.
-    const gamepad = this.getGamepad();
-    // If a gamepad is available and the button at the given index is pressed, return true. Otherwise, return false.
-    if (gamepad && gamepad.buttons[buttonIndex]) {
-      return gamepad.buttons[buttonIndex].pressed;
-    }
-    return false;
+    if (this.enabled) {
+      // Get the current state of the gamepad.
+      const gamepad = this.getGamepad();
+      // If a gamepad is available and the button at the given index is pressed, return true. Otherwise, return false.
+      if (gamepad && gamepad.buttons[buttonIndex]) {
+        return gamepad.buttons[buttonIndex].pressed;
+      }
+      return false;
+    }  
   }
 
 }

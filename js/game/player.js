@@ -22,16 +22,21 @@ class Player extends Entity {
     
     // Initialize all the player specific properties
     this.direction = 1;
+    
     this.lives = 3;
     this.score = 0;
+    
     this.isOnPlatform = false;
+    
     this.isJumping = false;
     this.jumpForce = 400;
     this.jumpTime = 0.3;
     this.jumpTimer = 0;
+    
     this.speed = 100;
+    
     this.isInvulnerable = false;
-  }x
+  }
 
   // Does not function, as pause toggles too quickly
   // pauseHandler() {

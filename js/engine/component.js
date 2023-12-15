@@ -5,6 +5,9 @@ class Component {
       // The gameObject property references the object that this component is attached to.
       // Initially, it is set to null.
       this.gameObject = null;
+
+      // Any component may be enabled or disabled. This must be reflected in every method.
+      this.enabled = true;
     }
   
     // The update method is typically called once per game update cycle (or frame). 
