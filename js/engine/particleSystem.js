@@ -19,38 +19,35 @@ class ParticleSystem extends GameObject {
 
   // The update method is called once per game frame and is responsible for updating the state of the particle system.
   update(deltaTime) {
-    if (this.enabled) {
-      // If there's still time left to emit particles...
-      if (this.emitDuration > 0) {
-        // Emit particles.
-        this.emitParticles(deltaTime);
-        // Decrease the emit duration by the amount of time that has passed since the last frame.
-        this.emitDuration -= deltaTime;
-      } else if (this.emitDuration <= 0) {
-        // If the emit duration has run out, remove the particle system from the game.
-        this.game.removeGameObject(this);
-      }
-      // Call the update method of the parent class (GameObject), which will update all of the system's components.
-      super.update(deltaTime);
+    // If there's still time left to emit particles...
+    if (this.emitDuration > 0) {
+      // Emit particles.
+      this.emitParticles(deltaTime);
+      // Decrease the emit duration by the amount of time that has passed since the last frame.
+      this.emitDuration -= deltaTime;
+    } else if (this.emitDuration <= 0) {
+      // If the emit duration has run out, remove the particle system from the game.
+      this.game.removeGameObject(this);
     }
+
+    // Call the update method of the parent class (GameObject), which will update all of the system's components.
+    super.update(deltaTime);
   }
 
   // The emitParticles method is responsible for creating and emitting particles.
   emitParticles(deltaTime) {
-    if (this.enabled) {
-      // Calculate how many particles to emit in this frame.
-      const particlesToEmit = Math.ceil((this.count / this.emitDuration) * deltaTime);
-      // Emit the calculated number of particles.
-      for (let i = 0; i < particlesToEmit && this.particlesEmitted < this.count; i++) {
-        // Create a new particle with a random life duration, size, and initial velocity.
-        const lifeDuration = this.lifeDuration + Math.random() - 0.5;
-        const particle = new Particle(this.x, this.y, Math.random() * 5, Math.random() * 5, this.color, lifeDuration);
-        particle.addComponent(new Physics({ x: (Math.random() - 0.5) * 50, y: (Math.random() - 0.5) * 50 }, { x: 0, y: 0 }));
-        // Add the particle to the game.
-        this.game.addGameObject(particle);
-        // Increase the count of particles emitted.
-        this.particlesEmitted++;
-      }
+    // Calculate how many particles to emit in this frame.
+    const particlesToEmit = Math.ceil((this.count / this.emitDuration) * deltaTime);
+    // Emit the calculated number of particles.
+    for (let i = 0; i < particlesToEmit && this.particlesEmitted < this.count; i++) {
+      // Create a new particle with a random life duration, size, and initial velocity.
+      const lifeDuration = this.lifeDuration + Math.random() - 0.5;
+      const particle = new Particle(this.x, this.y, Math.random() * 5, Math.random() * 5, this.color, lifeDuration);
+      particle.addComponent(new Physics({ x: (Math.random() - 0.5) * 50, y: (Math.random() - 0.5) * 50 }, { x: 0, y: 0 }));
+      // Add the particle to the game.
+      this.game.addGameObject(particle);
+      // Increase the count of particles emitted.
+      this.particlesEmitted++;
     }
   }
 }

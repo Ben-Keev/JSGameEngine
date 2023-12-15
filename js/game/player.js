@@ -5,6 +5,7 @@ import Physics from '../engine/physics.js';
 import { Images } from '../engine/resources.js';
 import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
+import { audioManager } from '../engine/audioManager.js';
 
 // Defining a class Player that extends GameObject
 class Player extends Entity {
@@ -90,6 +91,7 @@ class Player extends Entity {
     // Handle player jumping
     if (this.input.isActionDown('Jump') && this.isOnPlatform) {
       this.startJump();
+      audioManager.playAudio('jump');
     }
 
     if (this.isJumping) {

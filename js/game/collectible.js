@@ -22,6 +22,8 @@ class Collectible extends Entity {
     // Call the constructor of the superclass (GameObject) with the x and y coordinates
     super(x, y, new Renderer(color, width, height), new Physics({ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }));
 
+    this.color = color;
+
     this.tag = tag;
 
     // Set the 'value' property of this collectible. This could be used to score points when the collectible is collected.
@@ -52,8 +54,8 @@ class Collectible extends Entity {
       case 'speed':
         player.speed += this.value;
         break;
-      default:
-        // Code for other powerups
+      case 'jump':
+        player.jumpForce += this.value;
         break;
     }
   }

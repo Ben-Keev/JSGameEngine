@@ -4,18 +4,30 @@ const Images = {
   enemy: new Image(), // The Image instance for the enemy.
 };
 
-// Create an AudioFiles object to hold the file paths of the audio resources.
-const AudioFiles = {
-  jump: './resources/audio/jump.mp3', // The file path of the jump sound.
-  collect: './resources/audio/collect.mp3', // The file path of the collect sound.
-  // Add more audio file paths as needed
-};
+
+const Animations = {
+  player: {
+    walk: [new Image(), new Image(), new Image()],
+    jump: [new Image()],
+    idle: [new Image()]
+  },
+
+  enemy: {
+    walk: [new Image(), new Image()],
+  }
+}
 
 // Set the source of the player image.
 Images.player.src = './resources/images/player/player.png'; // Update the image path
 
 // Set the source of the enemy image.
 Images.enemy.src = './resources/images/enemy/enemy.png'; // Update the image path
+
+// Create an AudioFiles object to hold the file paths of the audio resources.
+const AudioFiles = {
+  jump: new Audio('./resources/audio/jump.mp3'), // The file path of the jump sound.
+  collect: new Audio('./resources/audio/collect.mp3'), // The file path of the collect sound.
+};
 
 // Export the Images and AudioFiles objects so they can be imported and used in other modules.
 export { Images, AudioFiles };

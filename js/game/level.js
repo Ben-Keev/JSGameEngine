@@ -47,8 +47,10 @@ class Level extends Game {
 
     // Create collectibles and add them to the game
     this.addGameObject(new Collectible(250, this.canvas.height - 100, 20, 20));
-    this.addGameObject(new Collectible(450, this.canvas.height - 100, 20, 20));
-    this.addGameObject(new Collectible(650, this.canvas.height - 100, 20, 20));
+    this.addGameObject(new Collectible(450, this.canvas.height - 100, 20, 20, 'green', 'speed', 100));
+    this.addGameObject(new Collectible(650, this.canvas.height - 100, 20, 20, 'pink', 'health', 1));
+    this.addGameObject(new Collectible(850, this.canvas.height - 100, 20, 20, 'blue', 'jump', 50));
+
   }
   
 }
