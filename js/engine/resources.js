@@ -4,7 +4,6 @@ const Images = {
   enemy: new Image(), // The Image instance for the enemy.
 };
 
-
 const Animations = {
   player: {
     walk: [new Image(), new Image(), new Image()],
@@ -14,6 +13,18 @@ const Animations = {
 
   enemy: {
     walk: [new Image(), new Image()],
+  }
+}
+
+// Set the source of animations
+// Copilot generated
+// Iterates through every animation in Animations.player
+for (let key in Animations.player) {
+  if (Animations.player.hasOwnProperty(key)) {
+    for (let i = 0; i < Animations.player[key].length; i++) {
+      // Copilot generated
+      Animations.player[key][i].src = `./resources/images/player/${key}-${i+1}.png`;
+    }
   }
 }
 
@@ -30,4 +41,4 @@ const AudioFiles = {
 };
 
 // Export the Images and AudioFiles objects so they can be imported and used in other modules.
-export { Images, AudioFiles };
+export { Images, AudioFiles, Animations };

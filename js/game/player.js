@@ -2,16 +2,16 @@
 import Entity from './entity.js';
 import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
-import { Images } from '../engine/resources.js';
+import { Animations } from '../engine/resources.js';
 import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
 import { audioManager } from '../engine/audioManager.js';
+import Animator from '../engine/animator2.js';
 
 // Defining a class Player that extends GameObject
 class Player extends Entity {
   // Constructor initializes the game object and add necessary components
-  constructor(x, y, renderer = new Renderer('blue', 50, 50, Images.player), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
-    
+  constructor(x, y, renderer = new Renderer('blue', 50, 50, Animations.player.idle[0]), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
     super(x, y, renderer, physics); // Call parent's constructor
 
     this.physics = this.getComponent(Physics);
@@ -21,6 +21,9 @@ class Player extends Entity {
     this.input = this.getComponent(ActionHandler);
     this.input.addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action
     
+    this.addComponent(new Animator(this, Animations.player)); // Add animator for handling animations
+    this.animator = this.getComponent(Animator);
+
     // Initialize all the player specific properties
     this.direction = 1;
     
@@ -78,8 +81,11 @@ class Player extends Entity {
   movementHandler() {
     const movementAxes = this.input.getMovementAxes(); // Get movement axes from input component
 
+    //this.getComponent(Animator).changeAnimation('walk', movementAxes.x > 0.1 || movementAxes.x < -0.1);
+
     // Handle player movement
     if (movementAxes.x > 0.1 || movementAxes.x < -0.1) {
+      // Map.sign returns 1 with the same sign as the argument, and -1 with the opposite sign
       this.physics.velocity.x = this.speed * Math.sign(movementAxes.x);
       this.direction = -Math.sign(movementAxes.x);
     } else {
