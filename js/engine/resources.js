@@ -5,7 +5,19 @@ const Images = {
 };
 
 const Animations = {
-  player: {
+  player0: {
+    walk: [new Image(), new Image(), new Image()],
+    jump: [new Image()],
+    idle: [new Image()]
+  },
+
+  player1: {
+    walk: [new Image(), new Image(), new Image()],
+    jump: [new Image()],
+    idle: [new Image()]
+  },
+
+  player2: {
     walk: [new Image(), new Image(), new Image()],
     jump: [new Image()],
     idle: [new Image()]
@@ -19,11 +31,15 @@ const Animations = {
 // Set the source of animations
 // Copilot generated
 // Iterates through every animation in Animations.player
-for (let key in Animations.player) {
-  if (Animations.player.hasOwnProperty(key)) {
-    for (let i = 0; i < Animations.player[key].length; i++) {
-      // Copilot generated
-      Animations.player[key][i].src = `./resources/images/player/${key}-${i+1}.png`;
+for (let key in Animations) {
+  if (Animations.hasOwnProperty(key)) {
+    for (let subKey in Animations[key]) {
+      if (Animations[key].hasOwnProperty(subKey)) {
+        for (let i = 0; i < Animations[key][subKey].length; i++) {
+          // Copilot generated
+          Animations[key][subKey][i].src = `./resources/images/${key}/${subKey}-${i+1}.png`;
+        }
+      }
     }
   }
 }

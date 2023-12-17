@@ -50,12 +50,15 @@ class Collectible extends Entity {
         break;
       case 'health':
         player.lives += this.value;
+        player.score++;
         break;
       case 'speed':
         player.speed += this.value;
+        player.score++;
         break;
       case 'jump':
         player.jumpForce += this.value;
+        player.score++;
         break;
     }
   }

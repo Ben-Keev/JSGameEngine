@@ -1,7 +1,7 @@
 import Component from './component.js';
 import Renderer from './renderer.js'; 
 
-class Animator extends Component {
+class Animator2 extends Component {
   constructor(entity, frames) {
     super();
     this.entity = entity;

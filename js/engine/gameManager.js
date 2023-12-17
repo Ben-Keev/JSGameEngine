@@ -14,5 +14,4 @@ class AudioManager extends GameObject {
   }
 }
 
-// Copilot generated
-export const audioManager = new AudioManager();
+export const gameManager = new AudioManager();

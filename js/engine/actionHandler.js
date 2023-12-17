@@ -3,8 +3,8 @@ import Action from './action.js';
 
 // Determines if any inputs match actions inputted.
 class ActionHandler extends Input {
-    constructor() {
-        super();
+    constructor(index) {
+        super(index);
         this.actions = [];
     }
 

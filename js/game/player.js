@@ -5,24 +5,28 @@ import Physics from '../engine/physics.js';
 import { Animations } from '../engine/resources.js';
 import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
-import { audioManager } from '../engine/audioManager.js';
-import Animator from '../engine/animator2.js';
+import {audioManager} from '../engine/audioManager.js';
+import Animator from '../engine/animator.js';
 
 // Defining a class Player that extends GameObject
 class Player extends Entity {
   // Constructor initializes the game object and add necessary components
-  constructor(x, y, renderer = new Renderer('blue', 50, 50, Animations.player.idle[0]), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
+  constructor(x, y, index, renderer = new Renderer('blue', 50, 50, Animations['player'+index].idle[0]), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
     super(x, y, renderer, physics); // Call parent's constructor
 
     this.physics = this.getComponent(Physics);
     this.renderer = this.getComponent(Renderer);
     
-    this.addComponent(new ActionHandler()); // Add input for handling user input
+    this.addComponent(new ActionHandler(index)); // Add input for handling user input
     this.input = this.getComponent(ActionHandler);
-    this.input.addAction(new Action('Jump', 'ArrowUp', 0)); // Add jump action
+    this.input.addAction(new Action('jump', 'ArrowUp', 0)); // Add jump action
     
-    this.addComponent(new Animator(this, Animations.player)); // Add animator for handling animations
-    this.animator = this.getComponent(Animator);
+    this.winner = false;
+
+    this.spawnX = x;
+
+    // Keeps track of the player number
+    this.index = index;
 
     // Initialize all the player specific properties
     this.direction = 1;
@@ -37,19 +41,10 @@ class Player extends Entity {
     this.jumpTime = 0.3;
     this.jumpTimer = 0;
     
-    this.speed = 100;
+    this.speed = 200;
     
     this.isInvulnerable = false;
   }
-
-  // Does not function, as pause toggles too quickly
-  // pauseHandler() {
-  //   console.log(this.input.wasActionDown('Pause'))
-  //   // Handle pausing the game
-  //   if (this.input.wasActionDown('Pause')) {
-  //     this.game.togglePause(); // Call togglePause() from game.js
-  //   }
-  // }
 
   // The update function runs every frame and contains game logic
   update(deltaTime) {
@@ -62,26 +57,45 @@ class Player extends Entity {
   
     // Check if player has fallen off the bottom of the screen
     if (this.y > this.game.canvas.height) {
+
+      if (!this.game.viewingResults) { // Can't use this in results screen
+        --this.lives;
+      }
+
       this.resetPlayerState();
     }
 
-    // Check if player has no lives left
-    if (this.lives <= 0) {
-      location.reload();
+    if(this.lives <= 0) {
+      this.renderer.enabled = false;
+      this.physics.enabled = false;
     }
+    //   this.resetPlayerScore();
+    //   this.resetPlayerState();
 
-    // Check if player has collected all collectibles
-    if (this.score >= 3) {
-      location.reload();
+    //   // Procedurally Generated level may be impossible. make new one.
+    //   if(this.game.currentLevel >= 3) {
+    //     this.game.transitionLevel(this.game.currentLevel + 1);
+    //   }
+    // }
+
+    // If a player has reached the goal, load a new level
+    if (this.score >= this.game.goal) {
+      this.game.transitionLevel(this.game.currentLevel + 1);
     }
 
     super.update(deltaTime);
   }
 
+  onCollisionEnter(objects) {
+    objects.forEach(object => {
+      if (object instanceof Player) {
+        //this.getComponent(Physics).velocity.x = -(object.getComponent(Physics).velocity.x + 100);
+      }
+    });
+  }        
+
   movementHandler() {
     const movementAxes = this.input.getMovementAxes(); // Get movement axes from input component
-
-    //this.getComponent(Animator).changeAnimation('walk', movementAxes.x > 0.1 || movementAxes.x < -0.1);
 
     // Handle player movement
     if (movementAxes.x > 0.1 || movementAxes.x < -0.1) {
@@ -95,7 +109,7 @@ class Player extends Entity {
 
   jumpHandler(deltaTime) {
     // Handle player jumping
-    if (this.input.isActionDown('Jump') && this.isOnPlatform) {
+    if (this.input.isActionDown('jump') && this.isOnPlatform) {
       this.startJump();
       audioManager.playAudio('jump');
     }
@@ -136,7 +150,7 @@ class Player extends Entity {
 
   resetPlayerState() {
     // Reset the player's state, repositioning it and nullifying movement
-    this.x = this.game.canvas.width / 2;
+    this.x = this.spawnX;
     this.y = this.game.canvas.height / 2;
     this.getComponent(Physics).velocity = { x: 0, y: 0 };
     this.getComponent(Physics).acceleration = { x: 0, y: 0 };
@@ -144,13 +158,15 @@ class Player extends Entity {
     this.isOnPlatform = false;
     this.isJumping = false;
     this.jumpTimer = 0;
+
+    // Remove powerup benefits
+    this.speed = 200;
+    this.jumpForce = 400;
   }
 
-  resetGame() {
-    // Reset the game state, which includes the player's state
+  resetPlayerScore() {
     this.lives = 3;
     this.score = 0;
-    this.resetPlayerState();
   }
 }
 

@@ -1,5 +1,7 @@
 // This class depends on the Camera, which is a separate module and needs to be imported.
 import Camera from './camera.js';
+import Input from './input.js';
+import Player from '../game/player.js';
 
 
 // The Game class is responsible for setting up and managing the main game loop.
@@ -71,14 +73,7 @@ class Game {
 
   // This method updates all the game objects.
   update() {
-    // Call each game object's update method with the delta time.
-    for (const gameObject of this.gameObjects) {
-      gameObject.update(this.deltaTime);
-    }
-    // Filter out game objects that are marked for removal.
-    this.gameObjects = this.gameObjects.filter(obj => !this.gameObjectsToRemove.includes(obj));
-    // Clear the list of game objects to remove.
-    this.gameObjectsToRemove = [];
+
   }
 
   // This method draws all the game objects on the canvas.
@@ -132,6 +127,12 @@ class Game {
 
   togglePause() {
     this.isPaused = !this.isPaused;
+
+    this.gameObjects.forEach((obj) => { // Disable inputs
+      if (obj instanceof Player) {
+        obj.getComponent(Input).enabled = !this.isPaused;
+      }
+    });
   }  
 }
 

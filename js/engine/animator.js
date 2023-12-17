@@ -1,12 +1,40 @@
 import Component from './component.js';
 import Renderer from './renderer.js';
 
-class Animator2 extends Component {
+class Animator extends Component {
     constructor(animations, parentEntity) {
         super();
         this.animations = animations;
         this.parentEntity = parentEntity;
         this.currentAnimation = 'idle';
+        this.currentFrameIndex = 0;
+    }
+
+    update(deltaTime) {
+        const debounceTimeout = setTimeout(() => {
+            this.delay(1000);
+
+            if (this.currentFrameIndex < this.animations[this.currentAnimation].length - 1) {
+                this.currentFrameIndex++;
+            } else {
+                this.currentFrameIndex = 0;
+            }
+
+            this.parentEntity.getComponent(Renderer).image = this.animations[this.currentAnimation][this.currentFrameIndex];
+
+            clearTimeout(debounceTimeout);
+        }, 100);
+
+        
+
+        super.update();
+    }
+
+
+    changeAnimation(name, condition) {
+        if (condition) {
+            this.currentAnimation = name;
+        }
     }
 
     // Animations with only a condition.
@@ -15,8 +43,7 @@ class Animator2 extends Component {
     //     if (this.enabled) {
     //         if (condition) {
     //             for (let i = 0; i < this.animations[name].length; i++) {
-    //                 console.log(i);
-    //                 setInterval(() => {
+    //                 setTimeout(() => {
     //                     this.parentEntity.getComponent(Renderer).image = this.animations[name][i];
     //                 }, timeout * i);
     //             }
@@ -27,29 +54,25 @@ class Animator2 extends Component {
     //     }
     // }
 
-    playAnimation(name, timeout, condition) {
-        if (this.enabled) {
-            const animationFrames = this.animations[this.currentAnimation];
-            let frameIndex = 0;
+
+    // playAnimation(name, timeout, condition) {
+    //     if (this.enabled) {
+    //         const animationFrames = this.animations[this.currentAnimation];
+    //         let frameIndex = 0;
 
             
-            const animateFrame = async () => {
-                this.parentEntity.getComponent(Renderer).image = animationFrames[frameIndex];
-                frameIndex++;
-                if (frameIndex < animationFrames.length) {
-                    await this.delay(200);
-                }
-            };
+    //         const animateFrame = async () => {
+    //             this.parentEntity.getComponent(Renderer).image = animationFrames[frameIndex];
+    //             frameIndex++;
+    //             if (frameIndex < animationFrames.length) {
+    //                 await this.delay(200);
+    //             }
+    //         };
 
-            animateFrame();
-        }
-    }
+    //         animateFrame();
+    //     }
+    // }
 
-    changeAnimation(name, condition) {
-        if (condition) {
-            this.currentAnimation = name;
-        }
-    }
 
     draw(ctx) {
 
