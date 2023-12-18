@@ -16,7 +16,7 @@ class GameManager {
     this.queue = []; // Queue of players waiting to join
   }
 
-  update(deltaTime) {
+  update() {
     // If the player is not viewing the results screen or in a level, load the next level
     if (!this.game.viewingResults && !this.game.inLevel) {
       this.game.loadLevel(this.game.currentLevel);
@@ -31,14 +31,13 @@ class GameManager {
       this.addPlayer(this.queue.shift());
     }
 
-    try { // Failsafe in case a player disconnects while this check occurs.
-      for(let player of this.players) {
-        if( player.lives <=0 && player == this.game.camera.target) { // Checks if the player is dead and is the camera target
-          this.refocusCamera();
-        }
-      }  
+    const target = this.game.camera.target;
+    try { // Will fail if the camera target has no lives
+      if (target.lives <= 0) {
+        this.refocusCamera();
+      }
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
   }
 

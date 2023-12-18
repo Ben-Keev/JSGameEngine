@@ -3,7 +3,6 @@ import Camera from './camera.js';
 import Input from './input.js';
 import Player from '../game/player.js';
 import { gameManager } from './gameManager.js';
-import PlayerUI from '../game/playerUI.js';
 
 // The Game class is responsible for setting up and managing the main game loop.
 class Game {
@@ -41,6 +40,10 @@ class Game {
       if (event.code === 'Space') {
         this.togglePause();
       }
+
+      if (event.code === 'Escape' && !this.isPaused && !this.viewingResults) {
+        this.loadLevel(this.currentLevel + 1);
+      }
     });
 
     // Copilot generated
@@ -50,9 +53,6 @@ class Game {
       
       // Find and remove the player with the disconnected gamepad index
       const disconnectedPlayer = gameManager.players[event.gamepad.index];
-
-
-      const disconnectedPlayerUI = gameManager.playerUIs[event.gamepad.index];
 
       if (disconnectedPlayer) {
         console.log('Removing player ' + event.gamepad.index)

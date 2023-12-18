@@ -25,4 +25,3 @@ class Component {
   
   // The Component class is exported as the default export of this module, allowing it to be imported in other modules.
   export default Component;
-  

@@ -2,16 +2,15 @@
 import Entity from './entity.js';
 import Renderer from '../engine/renderer.js';
 import Physics from '../engine/physics.js';
-import { Animations } from '../engine/resources.js';
+import { Images } from '../engine/resources.js';
 import ActionHandler from '../engine/actionHandler.js';
 import Action from '../engine/action.js';
 import {audioManager} from '../engine/audioManager.js';
-import Animator from '../engine/animator.js';
 
 // Defining a class Player that extends GameObject
 class Player extends Entity {
   // Constructor initializes the game object and add necessary components
-  constructor(x, y, index, renderer = new Renderer('blue', 50, 50, Animations['player'+index].idle[0]), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
+  constructor(x, y, index, renderer = new Renderer('blue', 50, 50, Images['player'+index].idle[0]), physics = new Physics({ x: 0, y: 0 }, { x: 0, y: 0 })) {
     super(x, y, renderer, physics); // Call parent's constructor
 
     this.physics = this.getComponent(Physics);
@@ -58,7 +57,7 @@ class Player extends Entity {
     // Check if player has fallen off the bottom of the screen
     if (this.y > this.game.canvas.height) {
 
-      if (!this.game.viewingResults) { // Can't use this in results screen
+      if (!this.game.viewingResults) { // Don't deduct lives in result screen
         --this.lives;
       }
 
@@ -69,14 +68,6 @@ class Player extends Entity {
       this.renderer.enabled = false;
       this.physics.enabled = false;
     }
-    //   this.resetPlayerScore();
-    //   this.resetPlayerState();
-
-    //   // Procedurally Generated level may be impossible. make new one.
-    //   if(this.game.currentLevel >= 3) {
-    //     this.game.transitionLevel(this.game.currentLevel + 1);
-    //   }
-    // }
 
     // If a player has reached the goal, load a new level
     if (this.score >= this.game.goal) {
@@ -85,14 +76,6 @@ class Player extends Entity {
 
     super.update(deltaTime);
   }
-
-  onCollisionEnter(objects) {
-    objects.forEach(object => {
-      if (object instanceof Player) {
-        //this.getComponent(Physics).velocity.x = -(object.getComponent(Physics).velocity.x + 100);
-      }
-    });
-  }        
 
   movementHandler() {
     const movementAxes = this.input.getMovementAxes(); // Get movement axes from input component

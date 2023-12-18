@@ -19,7 +19,7 @@ import Player from './player.js';
 class Enemy extends Entity {
 
   // Define the constructor for this class, which takes two arguments for the x and y coordinates
-  constructor(x, y, renderer = new Renderer('green', 50, 50, Images.enemy), physics = new Physics({ x: 50, y: 0 }, { x: 0, y: 0 })) {
+  constructor(x, y, renderer = new Renderer('green', 50, 50, Images.enemy.idle[0]), physics = new Physics({ x: 50, y: 0 }, { x: 0, y: 0 })) {
     // Call the constructor of the superclass (GameObject) with the x and y coordinates
     super(x, y, renderer, physics);
         

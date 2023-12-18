@@ -47,4 +47,3 @@ class GameObject {
   
   // The GameObject class is exported as the default export of this module.
   export default GameObject;
-  

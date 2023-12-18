@@ -13,7 +13,6 @@ class Input extends Component {
     // An object to store the state of each key. The keys are the keyboard key codes, and the values are boolean indicating whether the key is down.
     this.keys = {};
     // The index of the gamepad that this input component is listening to.
-    this.gamepadIndex = null;
 
     // Add event listeners for the keydown and keyup events.
     // When a keydown event is fired, the corresponding key in the keys object is set to true.

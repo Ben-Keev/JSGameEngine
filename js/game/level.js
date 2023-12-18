@@ -133,10 +133,10 @@ class Level extends Game {
   }
 
   generateCollectiblesLevel2() {
-    this.addGameObject(new Collectible(250, this.canvas.height - 100, 20, 20, 'gold', 'coin', 30));
-    this.addGameObject(new Collectible(450, this.canvas.height - 100, 20, 20, 'green', 'speed', 100));
-    this.addGameObject(new Collectible(650, this.canvas.height - 100, 20, 20, 'pink', 'health', 1));
-    this.addGameObject(new Collectible(850, this.canvas.height - 100, 20, 20, 'blue', 'jump', 50));
+    this.addGameObject(new Collectible(250, this.canvas.height - 100, 20, 20, 'gold', 'coin', 10));
+    this.addGameObject(new Collectible(450, this.canvas.height - 100, 20, 20, 'green', 'speed', 200));
+    this.addGameObject(new Collectible(650, this.canvas.height - 100, 20, 20, 'pink', 'health', 2));
+    this.addGameObject(new Collectible(850, this.canvas.height - 100, 20, 20, 'blue', 'jump', 75));
   }
 
   // Copilot generated
@@ -147,7 +147,6 @@ class Level extends Game {
 
     if (this.currentLevel >= 3) { // The player has continued through procedural levels.
       this.currentLevel++;
-      console.log(this.currentLevel);
     } else {
       this.currentLevel = 3;
     }
