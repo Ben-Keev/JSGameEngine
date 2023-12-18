@@ -2,7 +2,8 @@
 import Camera from './camera.js';
 import Input from './input.js';
 import Player from '../game/player.js';
-
+import { gameManager } from './gameManager.js';
+import PlayerUI from '../game/playerUI.js';
 
 // The Game class is responsible for setting up and managing the main game loop.
 class Game {
@@ -27,6 +28,14 @@ class Game {
     // Instantiate a new camera without a target and with dimensions equal to the canvas size.
     this.camera = new Camera(null, this.canvas.width, this.canvas.height);
 
+    // Link the gameManager to this script
+    gameManager.game = this;
+
+    // Game States
+    this.isPaused = false;
+    this.viewingResults = false;
+    this.inLevel = false;
+    
     // Allows user to pause game via keyboard
     document.addEventListener('keyup', (event) => {
       if (event.code === 'Space') {
@@ -34,7 +43,30 @@ class Game {
       }
     });
 
-    this.isPaused = false;
+    // Copilot generated
+    // Listen for gamepad disconnect event to remove players
+    window.addEventListener('gamepaddisconnected', (event) => {
+      console.log('Gamepad disconnected:', event.gamepad, ' at index ', event.gamepad.index);
+      
+      // Find and remove the player with the disconnected gamepad index
+      const disconnectedPlayer = gameManager.players[event.gamepad.index];
+
+
+      const disconnectedPlayerUI = gameManager.playerUIs[event.gamepad.index];
+
+      if (disconnectedPlayer) {
+        console.log('Removing player ' + event.gamepad.index)
+        gameManager.removePlayer(disconnectedPlayer);
+      }
+    });
+
+    // Listen for more gamepads connected. this will be used to add more players
+    window.addEventListener('gamepadconnected', (event) => {
+      console.log('Gamepad connected:', event.gamepad, ' at index ', event.gamepad.index);
+
+      gameManager.addPlayer(event.gamepad.index);
+    });
+
   }
 
   // This method resizes the canvas to fill the window, with a small margin.
@@ -64,6 +96,7 @@ class Game {
     // Update all game objects and the camera.
     this.update();
     this.camera.update();
+    gameManager.update();
     // Draw the game objects on the canvas.
     this.draw();
 
@@ -73,7 +106,14 @@ class Game {
 
   // This method updates all the game objects.
   update() {
-
+    // Call each game object's update method with the delta time.
+    for (const gameObject of this.gameObjects) {
+      gameObject.update(this.deltaTime);
+    }
+    // Filter out game objects that are marked for removal.
+    this.gameObjects = this.gameObjects.filter(obj => !this.gameObjectsToRemove.includes(obj));
+    // Clear the list of game objects to remove.
+    this.gameObjectsToRemove = [];
   }
 
   // This method draws all the game objects on the canvas.
